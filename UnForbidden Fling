@@ -208,10 +208,9 @@ end
 
 for _,x in next, Targets do
     if GetPlayer(x) and GetPlayer(x) ~= Player then
-            local TPlayer = GetPlayer(x)
-            if TPlayer then
-                SkidFling(TPlayer)
-            end
+        local TPlayer = GetPlayer(x)
+        if TPlayer then
+            SkidFling(TPlayer)
         end
     elseif not GetPlayer(x) and not AllBool then
         Message("Error Occurred", "Username Invalid", 5)
