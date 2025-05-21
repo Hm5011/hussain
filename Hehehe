@@ -1,30 +1,32 @@
 local Ids = {
-	["302628"] = "2030/01/01",
-    ["2393639720"] = "2030/01/01",
-	["951402104"] = "2030/01/01",
-	["1773024222"] = "2030/01/01",
-	["3025721500"] = "2025/07/03",
-	["7610949712"] = "2025/07/19",
-	["5350231752"] = "2025/06/01",
-	["5746006041"] = "2025/06/05",
-	["4255091677"] = "2025/06/01",
-	["3482512899"] = "2025/05/22",
-	["2862229381"] = "2025/06/22",
-	["5142410571"] = "2025/06/12",
-	["7999392371"] = "2025/06/16",
-	["7206616984"] = "2025/06/16",
-	["1895890184"] = "2025/05/24",
-	["5569881805"] = "2025/05/23",
-	["7909396060"] = "2025/05/24",
-	["7427347736"] = "2025/05/24",
-	["3025607860"] = "2025/05/26",
-	["7473936232"] = "2025/05/24",
-	["6201530211"] = "2025/05/23",
+	["302628"] = "2030/01/01 12:00:00",
+    ["2393639720"] = "2030/01/01 12:00:00",
+	["951402104"] = "2030/01/01 12:00:00",
+	["1773024222"] = "2030/01/01 12:00:00",
+	["3025721500"] = "2025/07/03 12:00:00",
+	["7610949712"] = "2025/07/19 12:00:00",
+	["5350231752"] = "2025/06/01 12:00:00",
+	["5746006041"] = "2025/06/05 12:00:00",
+	["4255091677"] = "2025/06/01 12:00:00",
+	["3482512899"] = "2025/05/22 12:00:00",
+	["2862229381"] = "2025/06/22 12:00:00",
+	["5142410571"] = "2025/06/12 12:00:00",
+	["7999392371"] = "2025/06/16 12:00:00",
+	["7206616984"] = "2025/06/16 12:00:00",
+	["1895890184"] = "2025/05/24 12:00:00",
+	["5569881805"] = "2025/05/23 12:00:00",
+	["7909396060"] = "2025/05/24 12:00:00",
+	["7427347736"] = "2025/05/24 12:00:00",
+	["3025607860"] = "2025/05/26 12:00:00",
+	["7473936232"] = "2025/05/24 12:00:00",
+	["6201530211"] = "2025/05/22 18:20:00",
 }
-local PremuimUsers = {}
-local function FetchDate(DateStr)
-    local Year, Month, Day = string.match(DateStr, "(%d+)%/(%d+)%/(%d+)")
-    return tonumber(string.format("%04d%02d%02d", tonumber(Year), tonumber(Month), tonumber(Day)))
+
+local PremiumUsers = {}
+
+local function FetchDateTime(DateTimeStr)
+    local Year, Month, Day, Hour, Min, Sec = string.match(DateTimeStr, "(%d+)%/(%d+)%/(%d+)%s+(%d+):(%d+):(%d+)")
+    return tonumber(string.format("%04d%02d%02d%02d%02d%02d", Year, Month, Day, Hour, Min, Sec))
 end
 
 local Success, Response = pcall(function()
@@ -32,16 +34,23 @@ local Success, Response = pcall(function()
 end)
 
 local Data = game:GetService("HttpService"):JSONDecode(Response)
-local CurrentTimeString = Data and Data.timezone and Data.timezone.current_time
+local CurrentTimeString = Data and Data.timezone and Data.timezone.current_time 
+local CurrentYear, CurrentMonth, CurrentDay, CurrentHour, CurrentMin, CurrentSec = string.match(CurrentTimeString, "(%d+)%-(%d+)%-(%d+)T(%d+):(%d+):(%d+)")
+local CurrentCompare = tonumber(string.format(
+    "%04d%02d%02d%02d%02d%02d",
+    tonumber(CurrentYear),
+    tonumber(CurrentMonth),
+    tonumber(CurrentDay),
+    tonumber(CurrentHour),
+    tonumber(CurrentMin),
+    tonumber(CurrentSec)
+))
 
-local Year, Month, Day = string.match(CurrentTimeString, "(%d+)%-(%d+)%-(%d+)")
-local CurrentCompare = tonumber(string.format("%04d%02d%02d", tonumber(Year), tonumber(Month), tonumber(Day)))
-
-for ID, DateStr in pairs(Ids) do
-    local IDDateCompare = FetchDate(DateStr)
+for ID, Date in pairs(Ids) do
+    local IDDateCompare = FetchDateTime(Date)
     if IDDateCompare > CurrentCompare then
-        table.insert(PremuimUsers, tostring(ID))
+        table.insert(PremiumUsers, tostring(ID))
     end
 end
 
-return PremuimUsers
+return PremiumUsers
