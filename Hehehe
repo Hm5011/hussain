@@ -1,6 +1,6 @@
 local Ids = {
 	["302628"] = "2030/01/01",
-    	["2393639720"] = "2030/01/01",
+    ["2393639720"] = "2030/01/01",
 	["951402104"] = "2030/01/01",
 	["1773024222"] = "2030/01/01",
 	["3025721500"] = "2025/07/03",
@@ -21,23 +21,25 @@ local Ids = {
 	["7473936232"] = "2025/05/24",
 }
 local PremuimUsers = {}
-
 local function FetchDate(DateStr)
     local Year, Month, Day = string.match(DateStr, "(%d+)%/(%d+)%/(%d+)")
     return tonumber(string.format("%04d%02d%02d", tonumber(Year), tonumber(Month), tonumber(Day)))
 end
 
 local Success, Response = pcall(function()
-    return game:HttpGet("https://timeapi.io/api/Time/current/zone?timeZone=Asia/Baghdad")
+    return game:HttpGet("https://ipwho.is/169.224.121.8")
 end)
 
 local Data = game:GetService("HttpService"):JSONDecode(Response)
-local CurrentComparable = tonumber(string.format("%04d%02d%02d", tonumber(Data["year"]), tonumber(Data["month"]), tonumber(Data["day"])))
+local CurrentTimeString = Data and Data.timezone and Data.timezone.current_time
+
+local Year, Month, Day = string.match(CurrentTimeString, "(%d+)%-(%d+)%-(%d+)")
+local CurrentCompare = tonumber(string.format("%04d%02d%02d", tonumber(Year), tonumber(Month), tonumber(Day)))
 
 for ID, DateStr in pairs(Ids) do
-    local IDDateComparable = FetchDate(DateStr)
-    if IDDateComparable > CurrentComparable then
-        table.insert(PremuimUsers,tostring(ID))
+    local IDDateCompare = FetchDate(DateStr)
+    if IDDateCompare > CurrentCompare then
+        table.insert(PremuimUsers, tostring(ID))
     end
 end
 
