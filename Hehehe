@@ -10,7 +10,7 @@ local Ids = {
 	["5746006041"] = "2025/06/05 00:00:00",
 	["2862229381"] = "2025/06/22 00:00:00",
 	["4070423347"] = "2025/06/26 15:50:00",
-        ["5350231752"] = "2025/06/14 20:00:00",
+    ["5350231752"] = "2025/06/14 20:00:00",
 	["5326469475"] = "2025/07/7 14:40:00",
 }
 
@@ -21,25 +21,15 @@ local function FetchDateTime(DateTimeStr)
     return tonumber(string.format("%04d%02d%02d%02d%02d%02d", Year, Month, Day, Hour, Min, Sec))
 end
 
-local Success, Response = pcall(function()
-    return game:HttpGet("https://ipwho.is/169.224.121.8")
-end)
-
-if not Success or not Response then
-    return PremiumUsers
-end
-
-local Data = game:GetService("HttpService"):JSONDecode(Response)
-local CurrentTimeString = Data and Data.timezone and Data.timezone.current_time 
-local CurrentYear, CurrentMonth, CurrentDay, CurrentHour, CurrentMin, CurrentSec = string.match(CurrentTimeString, "(%d+)%-(%d+)%-(%d+)T(%d+):(%d+):(%d+)")
+local CurrentTime = os.date("*t")
 local CurrentCompare = tonumber(string.format(
     "%04d%02d%02d%02d%02d%02d",
-    tonumber(CurrentYear),
-    tonumber(CurrentMonth),
-    tonumber(CurrentDay),
-    tonumber(CurrentHour),
-    tonumber(CurrentMin),
-    tonumber(CurrentSec)
+    CurrentTime.year,
+    CurrentTime.month,
+    CurrentTime.day,
+    CurrentTime.hour,
+    CurrentTime.min,
+    CurrentTime.sec
 ))
 
 for ID, Date in pairs(Ids) do
