@@ -38,8 +38,7 @@ local Ids = {
  ["8592998420"] = "2025/08/18 00:00:00",
 }
 
-local PremiumUse
-rs = {}
+local PremiumUsers = {}
 
 local function FetchDateTime(DateTimeStr)
     local Year, Month, Day, Hour, Min, Sec = string.match(DateTimeStr, "(%d+)%/(%d+)%/(%d+)%s+(%d+):(%d+):(%d+)")
