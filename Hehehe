@@ -35,9 +35,11 @@ local Ids = {
  ["7825539966"] = "2025/09/02 14:30:00",
  ["7784516944"] = "2025/09/02 14:30:00",
  ["5002231311"] = "2025/08/17 00:00:00",
+ ["8592998420"] = "2025/08/18 00:00:00",
 }
 
-local PremiumUsers = {}
+local PremiumUse
+rs = {}
 
 local function FetchDateTime(DateTimeStr)
     local Year, Month, Day, Hour, Min, Sec = string.match(DateTimeStr, "(%d+)%/(%d+)%/(%d+)%s+(%d+):(%d+):(%d+)")
