@@ -1,6 +1,6 @@
 local BIds = {
   "1",
-  "4791868762"
+  "2"
 }
 
 return BIds
