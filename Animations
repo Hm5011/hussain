@@ -1,0 +1,649 @@
+--This is not a really important thing for you to scam it, ok? little skid.
+
+return function(Background, Moving_Section, Alert_Label, r, g, b, CreateClicker, CreateToggle, SendNotify, StopAnim)
+	local HttpService = game:GetService("HttpService")
+	local Players = game:GetService("Players")
+	local Workspace = game:GetService("Workspace")
+	local RunService = game:GetService("RunService")
+
+	local plr = Players.LocalPlayer
+
+	local DATA_URL = "https://raw.githubusercontent.com/DRYF-1/Roblox-Emote/main/AnimationSniper.json"
+	local FAV_FILE = "VR7_FavAnims.json"
+
+	local State = {
+		AnimationCache = {},
+		isLoading = false
+	}
+
+	local Favorites = {}
+
+	if isfile and readfile then
+		if isfile(FAV_FILE) then
+			local Success, Result = pcall(function() return HttpService:JSONDecode(readfile(FAV_FILE)) end)
+			if Success and type(Result) == "table" then
+				Favorites = Result
+			end
+		end
+	end
+
+	local function SaveFavorites()
+		if writefile then
+			pcall(function() writefile(FAV_FILE, HttpService:JSONEncode(Favorites)) end)
+		end
+	end
+
+	local FallbackCategoryMap = {
+		["1"] = "idle", ["2"] = "walk", ["3"] = "run",
+		["4"] = "jump", ["5"] = "fall", ["6"] = "climb", ["7"] = "swim"
+	}
+
+	local SavedAnimations = {}
+
+	local ArabicNames = {
+		Idle = "الوقفة",
+		Walk = "المشية",
+		Run = "الركضة",
+		Jump = "القفزة",
+		Climb = "التسلق",
+		Fall = "السقوط",
+		Swim = "السباحة"
+	}
+
+	local Order = {"Idle", "Walk", "Run", "Jump", "Climb", "Fall", "Swim"}
+
+	local function CopyTable(Source)
+		local NewTable = {}
+		for Key, Value in pairs(Source) do
+			NewTable[Key] = Value
+		end
+		return NewTable
+	end
+
+	local function CreateButton(Name, Text, Parent, IsButton)
+		local ButtonTemplate = Instance.new("TextButton")
+		ButtonTemplate.BackgroundColor3 = Color3.fromRGB(r, g, b)
+		ButtonTemplate.TextColor3 = Color3.fromRGB(0, 0, 0)
+		ButtonTemplate.Font = Enum.Font.Oswald
+		ButtonTemplate.Size = UDim2.new(0, 150, 0, 30)
+		ButtonTemplate.BackgroundTransparency = 0.5
+		ButtonTemplate.BorderSizePixel = 0
+		ButtonTemplate.TextScaled = true
+		ButtonTemplate.TextWrapped = true
+		ButtonTemplate.Name = Name
+		ButtonTemplate.Text = Text
+		ButtonTemplate.Parent = Parent
+		getgenv()[Name] = ButtonTemplate
+		
+		if IsButton == nil then
+			if CreateClicker then CreateClicker(ButtonTemplate) end
+		elseif IsButton == true then
+			if CreateToggle then CreateToggle(ButtonTemplate) end
+		end
+		return ButtonTemplate
+	end
+
+	local function SaveCategoryFromPack(PackTable, TargetCategory)
+		for Path, Id in pairs(PackTable) do
+			local CurrentCategory = string.match(Path, "^(.-)/")
+			local CurrentCategoryKey = CurrentCategory and CurrentCategory:sub(1, 1):upper() .. CurrentCategory:sub(2):lower()
+
+			if CurrentCategoryKey == TargetCategory then
+				SavedAnimations[Path] = Id
+			end
+		end
+	end
+
+	local function ApplySavedAnimations(Character)
+		if not Character or not next(SavedAnimations) then return end
+
+		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+		if not Humanoid or Humanoid.RigType ~= Enum.HumanoidRigType.R15 then return end
+
+		local Animate = Character:WaitForChild("Animate")
+		if StopAnim then StopAnim() end
+
+		for Path, Id in pairs(SavedAnimations) do
+			local Obj = Animate
+			for Segment in string.gmatch(Path, "[^/]+") do
+				Obj = Obj:FindFirstChild(Segment)
+				if not Obj then break end
+			end
+			if Obj and Obj:IsA("Animation") then
+				Obj.AnimationId = Id
+			end
+		end
+
+		Animate.Disabled = true
+		task.wait()
+		Animate.Disabled = false
+
+		local Animator = Humanoid:FindFirstChildOfClass("Animator")
+		if Animator then
+			for _, Track in pairs(Animator:GetPlayingAnimationTracks()) do
+				Track:Stop(0)
+				Track:Destroy()
+			end
+		end
+
+		Humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
+		task.wait(0.01)
+		Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
+	end
+
+	local function ApplyCategoryPack(PackTable, TargetCategory)
+		local Character = plr.Character
+		if not Character then return end
+
+		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+		if not Humanoid or Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
+			if SendNotify then SendNotify("System VR7", "يجب ان تكون R15", 7) end
+			return
+		end
+
+		local Animate = Character:FindFirstChild("Animate")
+		if not Animate then return end
+
+		if StopAnim then StopAnim() end
+		local Applied = false
+
+		for Path, Id in pairs(PackTable) do
+			local CurrentCategory = string.match(Path, "^(.-)/")
+			local CurrentCategoryKey = CurrentCategory and CurrentCategory:sub(1, 1):upper() .. CurrentCategory:sub(2):lower()
+
+			if CurrentCategoryKey == TargetCategory then
+				local Obj = Animate
+				for Segment in string.gmatch(Path, "[^/]+") do
+					Obj = Obj:FindFirstChild(Segment)
+					if not Obj then break end
+				end
+				if Obj and Obj:IsA("Animation") then
+					Obj.AnimationId = Id
+					Applied = true
+				end
+			end
+		end
+
+		if not Applied then
+			if SendNotify then SendNotify("System VR7", "ماكو انميشنات لهذا القسم", 2) end
+			return
+		end
+
+		SaveCategoryFromPack(PackTable, TargetCategory)
+
+		Animate.Disabled = true
+		task.wait()
+		Animate.Disabled = false
+
+		local Animator = Humanoid:FindFirstChildOfClass("Animator")
+		if Animator then
+			for _, Track in pairs(Animator:GetPlayingAnimationTracks()) do
+				Track:Stop(0)
+				Track:Destroy()
+			end
+		end
+
+		Humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
+		task.wait(0.01)
+		Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
+
+		if SendNotify then SendNotify("System VR7", "تم اختيار " .. (ArabicNames[TargetCategory] or TargetCategory), 1) end
+	end
+
+	local function ApplyAnimPack(AnimData)
+		SavedAnimations = CopyTable(AnimData)
+		
+		local Character = plr.Character
+		if not Character then return end
+
+		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+		if not Humanoid or Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
+			if SendNotify then SendNotify("System VR7", "يجب ان تكون R15", 7) end
+			return
+		end
+
+		local Animate = Character:WaitForChild("Animate")
+		if StopAnim then StopAnim() end
+
+		for Path, Id in pairs(AnimData) do
+			local Obj = Animate
+			for Segment in string.gmatch(Path, "[^/]+") do
+				Obj = Obj:FindFirstChild(Segment)
+				if not Obj then break end
+			end
+			if Obj and Obj:IsA("Animation") then
+				Obj.AnimationId = Id
+			end
+		end
+
+		Animate.Disabled = true
+		task.wait()
+		Animate.Disabled = false
+
+		local Animator = Humanoid:FindFirstChildOfClass("Animator")
+		if Animator then
+			for _, Track in pairs(Animator:GetPlayingAnimationTracks()) do
+				Track:Stop(0)
+				Track:Destroy()
+			end
+		end
+
+		Humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
+		task.wait(0.01)
+		Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
+
+		if SendNotify then SendNotify("System VR7", "تم اختيار المشية", 1) end
+	end
+
+	local CacheFileName = "AnimationCache.json"
+
+	local function LoadCacheFile()
+		if isfile and isfile(CacheFileName) then
+			local Success, Content = pcall(readfile, CacheFileName)
+			if Success then
+				local DecodeSuccess, DecodedTable = pcall(function()
+					return game:GetService("HttpService"):JSONDecode(Content)
+				end)
+				if DecodeSuccess and type(DecodedTable) == "table" then
+					return DecodedTable
+				end
+			end
+		end
+		return {}
+	end
+
+	local function SaveCacheFile(CacheData)
+		if writefile then
+			pcall(function()
+				local EncodedContent = game:GetService("HttpService"):JSONEncode(CacheData)
+				writefile(CacheFileName, EncodedContent)
+			end)
+		end
+	end
+
+	local function ResolveAnimationMappings(BundledItems)
+		local Mappings = {}
+		local FileCache = LoadCacheFile()
+		local IsCacheUpdated = false
+		
+		local LoadCounter = 0 
+		
+		for Key, AssetIds in pairs(BundledItems) do
+			local IdsToProcess = type(AssetIds) == "table" and AssetIds or {AssetIds}
+			
+			for _, AssetId in pairs(IdsToProcess) do
+				local CleanId = tonumber(AssetId)
+				if not CleanId or CleanId == 0 then continue end
+				
+				local StringId = tostring(CleanId) 
+				
+				if FileCache[StringId] then
+					for PathKey, AnimId in pairs(FileCache[StringId]) do
+						Mappings[PathKey] = AnimId
+					end
+					continue 
+				end
+				
+				local Success, Objects = pcall(function()
+					return game:GetObjects("rbxassetid://" .. CleanId)
+				end)
+				
+				FileCache[StringId] = {} 
+				IsCacheUpdated = true
+				
+				if Success and Objects and #Objects > 0 then
+					for _, Obj in pairs(Objects) do
+						for _, Descendant in ipairs(Obj:GetDescendants()) do
+							if Descendant:IsA("Animation") and Descendant.AnimationId and Descendant.AnimationId ~= "" then
+								local ExtractedCategory = Descendant.Parent.Name or FallbackCategoryMap[tostring(Key)] or "idle"
+								local PathKey = ExtractedCategory .. "/" .. Descendant.Name
+								
+								Mappings[PathKey] = Descendant.AnimationId
+								FileCache[StringId][PathKey] = Descendant.AnimationId
+							end
+						end
+						Obj:Destroy() 
+					end
+				end
+				
+				LoadCounter = LoadCounter + 1
+				if LoadCounter >= 2 then
+					RunService.Heartbeat:Wait()
+					LoadCounter = 0
+				end
+			end
+		end
+		
+		if IsCacheUpdated then
+			SaveCacheFile(FileCache)
+		end
+		
+		return Mappings
+	end
+
+	local function CreateSubSectionUI(NameKey, DisplayName, PackData, SearchBarRef)
+		local SectionName = NameKey .. "_Section"
+		local NewSection = Instance.new("ScrollingFrame")
+		NewSection.Name = SectionName
+		NewSection.Parent = Background
+		NewSection.Active = true
+		NewSection.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		NewSection.BackgroundTransparency = 1
+		NewSection.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		NewSection.BorderSizePixel = 0
+		NewSection.Position = UDim2.new(0, 105, 0, 30)
+		NewSection.Size = UDim2.new(0, 395, 0, 320)
+		NewSection.Visible = true
+		NewSection.CanvasSize = UDim2.new(0, 0, 0, 0)
+		NewSection.ScrollBarThickness = 5
+		NewSection.AutomaticCanvasSize = Enum.AutomaticSize.Y
+
+		local Mdre = Alert_Label:Clone()
+		Mdre.Parent = NewSection
+		Mdre.Text = DisplayName
+		Mdre.Position = UDim2.new(0, 0, 0, 0)
+		Mdre.Size = UDim2.new(1, 0, 0, 30)
+		Mdre.BackgroundTransparency = 1
+
+		local ButtonsHolder = Instance.new("Frame")
+		ButtonsHolder.Name = "ButtonsHolder"
+		ButtonsHolder.Parent = NewSection
+		ButtonsHolder.BackgroundTransparency = 1
+		ButtonsHolder.Position = UDim2.new(0, 0, 0, 40)
+		ButtonsHolder.Size = UDim2.new(1, 0, 0, 0)
+		ButtonsHolder.AutomaticSize = Enum.AutomaticSize.Y
+
+		local Tezk = Instance.new("UIGridLayout")
+		Tezk.Parent = ButtonsHolder
+		Tezk.CellPadding = UDim2.new(0, 40, 0, 20)
+		Tezk.CellSize = UDim2.new(0, 150, 0, 30)
+		Tezk.HorizontalAlignment = Enum.HorizontalAlignment.Center
+		Tezk.VerticalAlignment = Enum.VerticalAlignment.Top
+		Tezk.StartCorner = Enum.StartCorner.TopLeft
+		Tezk.SortOrder = Enum.SortOrder.LayoutOrder
+
+		local Tezk1 = Instance.new("UIPadding")
+		Tezk1.Parent = ButtonsHolder
+		Tezk1.PaddingRight = UDim.new(0, 20)
+		Tezk1.PaddingTop = UDim.new(0, 10)
+		Tezk1.PaddingBottom = UDim.new(0, 20)
+
+		local BackButton = Instance.new("TextButton")
+		BackButton.BackgroundColor3 = Color3.fromRGB(r, g, b)
+		BackButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+		BackButton.Font = Enum.Font.Oswald
+		BackButton.Size = UDim2.new(0, 150, 0, 30)
+		BackButton.BackgroundTransparency = 0.5
+		BackButton.BorderSizePixel = 0
+		BackButton.TextScaled = true
+		BackButton.TextWrapped = true
+		BackButton.Name = "Back"
+		BackButton.Text = "رجوع"
+		BackButton.LayoutOrder = 1
+		BackButton.Parent = ButtonsHolder
+		if CreateClicker then CreateClicker(BackButton) end
+
+		BackButton.MouseButton1Click:Connect(function()
+			NewSection.Visible = false
+			Moving_Section.Visible = true
+			if SearchBarRef then
+				SearchBarRef.Visible = true
+			end
+			NewSection:Destroy()
+		end)
+
+		local AllButton = Instance.new("TextButton")
+		AllButton.BackgroundColor3 = Color3.fromRGB(r, g, b)
+		AllButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+		AllButton.Font = Enum.Font.Oswald
+		AllButton.Size = UDim2.new(0, 150, 0, 30)
+		AllButton.BackgroundTransparency = 0.5
+		AllButton.BorderSizePixel = 0
+		AllButton.TextScaled = true
+		AllButton.TextWrapped = true
+		AllButton.Name = "All"
+		AllButton.Text = "كل الانميشن"
+		AllButton.LayoutOrder = 2
+		AllButton.Parent = ButtonsHolder
+		if CreateClicker then CreateClicker(AllButton) end
+
+		AllButton.MouseButton1Click:Connect(function()
+			ApplyAnimPack(PackData)
+		end)
+
+		local AddedCategories = {}
+		local LayoutIndex = 3
+
+		for _, OrderedCategory in ipairs(Order) do
+			for FullName, _ in pairs(PackData) do
+				local Category = string.match(FullName, "^(.-)/")
+				local CategoryKey = Category and Category:sub(1, 1):upper() .. Category:sub(2):lower()
+
+				if CategoryKey == OrderedCategory and not AddedCategories[CategoryKey] then
+					AddedCategories[CategoryKey] = true
+
+					local ThisCategoryKey = CategoryKey
+					local ThisLayoutIndex = LayoutIndex
+					LayoutIndex += 1
+
+					local ButtonTemplate = Instance.new("TextButton")
+					ButtonTemplate.BackgroundColor3 = Color3.fromRGB(r, g, b)
+					ButtonTemplate.TextColor3 = Color3.fromRGB(0, 0, 0)
+					ButtonTemplate.Font = Enum.Font.Oswald
+					ButtonTemplate.Size = UDim2.new(0, 150, 0, 30)
+					ButtonTemplate.BackgroundTransparency = 0.5
+					ButtonTemplate.BorderSizePixel = 0
+					ButtonTemplate.TextScaled = true
+					ButtonTemplate.TextWrapped = true
+					ButtonTemplate.Name = ThisCategoryKey
+					ButtonTemplate.Text = ArabicNames[ThisCategoryKey] or ThisCategoryKey
+					ButtonTemplate.LayoutOrder = ThisLayoutIndex
+					ButtonTemplate.Parent = ButtonsHolder
+					if CreateClicker then CreateClicker(ButtonTemplate) end
+
+					ButtonTemplate.MouseButton1Click:Connect(function()
+						ApplyCategoryPack(PackData, ThisCategoryKey)
+					end)
+
+					break
+				end
+			end
+		end
+	end
+
+	local function InitializeDynamicUI()
+		for _, child in ipairs(Moving_Section:GetChildren()) do
+			if child:IsA("UIGridLayout") or child:IsA("UIListLayout") then
+				child.SortOrder = Enum.SortOrder.LayoutOrder
+			end
+		end
+
+		local Folder = Instance.new("Folder")
+		Folder.Parent = Moving_Section
+		
+		local SearchBar = Instance.new("TextBox")
+		SearchBar.Name = "AnimSearchBar"
+		SearchBar.Parent = Folder
+		SearchBar.BackgroundColor3 = Color3.fromRGB(r, g, b)
+		SearchBar.TextColor3 = Color3.fromRGB(0, 0, 0)
+		SearchBar.Font = Enum.Font.Oswald
+		SearchBar.Size = UDim2.new(0, 385, 0, 30)
+		SearchBar.Position = UDim2.new(0, 6, 0, -40)
+		SearchBar.BackgroundTransparency = 0.5
+		SearchBar.BorderSizePixel = 0
+		SearchBar.TextScaled = true
+		SearchBar.TextWrapped = true
+		SearchBar.PlaceholderText = "ابحث عن المشية..."
+		SearchBar.PlaceholderColor3 = Color3.fromRGB(50, 50, 50)
+		SearchBar.Text = ""
+
+		local Success, Response = pcall(function() return game:HttpGet(DATA_URL) end)
+		if not Success or not Response then return end
+		
+		local DecodedData = HttpService:JSONDecode(Response)
+		if not DecodedData or not DecodedData.data then return end
+		
+		local UniquePacksArray = {}
+		local PackIndexMap = {}
+		
+		for _, Pack in ipairs(DecodedData.data) do
+			if Pack.bundledItems and Pack.name then
+				local CleanName = Pack.name:gsub("[:%.]", "")
+				
+				CleanName = CleanName:gsub("%s+[bB][yY].*", "")
+				
+				CleanName = CleanName:sub(1, 1):upper() .. CleanName:sub(2)
+			
+				if PackIndexMap[CleanName] then
+					UniquePacksArray[PackIndexMap[CleanName]] = Pack
+				else
+					Pack.name = CleanName
+					table.insert(UniquePacksArray, Pack)
+					PackIndexMap[CleanName] = #UniquePacksArray
+				end
+			end
+		end
+		
+		local SectionLayout = Moving_Section:FindFirstChildOfClass("UIGridLayout") or Moving_Section:FindFirstChildOfClass("UIListLayout")
+		if SectionLayout then
+			SectionLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+				Moving_Section.CanvasSize = UDim2.new(0, 0, 0, SectionLayout.AbsoluteContentSize.Y + 20)
+			end)
+			Moving_Section.CanvasSize = UDim2.new(0, 0, 0, SectionLayout.AbsoluteContentSize.Y + 20)
+		else
+			Moving_Section.AutomaticCanvasSize = Enum.AutomaticSize.Y
+		end
+		local PackButtons = {}
+		
+		local FirstFavPack = nil
+		
+		for Index, Pack in ipairs(UniquePacksArray) do
+			local NameKey = Pack.name:gsub("%s+", "")
+			
+			if Favorites[NameKey] and not FirstFavPack then
+				FirstFavPack = Pack
+			end
+			
+			local Btn = CreateButton(NameKey, Pack.name, Moving_Section, nil)
+			
+			local StarBtn = Instance.new("TextButton")
+			StarBtn.Name = "FavStar"
+			StarBtn.Parent = Btn
+			StarBtn.BackgroundTransparency = 1
+			StarBtn.Size = UDim2.new(0, 30, 1, 0)
+			StarBtn.Position = UDim2.new(1, -30, 0, 0)
+			StarBtn.Font = Enum.Font.Gotham
+			StarBtn.TextSize = 18
+			StarBtn.Text = Favorites[NameKey] and utf8.char(0x2B50) or utf8.char(0x2605)
+			StarBtn.Active = true
+					
+			Btn.LayoutOrder = Favorites[NameKey] and (Index - 10000) or Index
+			table.insert(PackButtons, Btn)
+					
+			StarBtn.MouseButton1Click:Connect(function()
+				if Favorites[NameKey] then
+					Favorites[NameKey] = nil
+					StarBtn.Text = utf8.char(0x2605)
+					Btn.LayoutOrder = Index
+				else
+					Favorites[NameKey] = true
+					StarBtn.Text = utf8.char(0x2B50)
+					Btn.LayoutOrder = Index - 10000
+				end
+				SaveFavorites()
+			end)
+			
+			Btn.MouseButton1Click:Connect(function()
+				local SectionName = NameKey .. "_Section"
+				local ExistingSection = Background:FindFirstChild(SectionName)
+
+				if ExistingSection then
+					Moving_Section.Visible = false
+					SearchBar.Visible = false
+					ExistingSection.Visible = true
+					return
+				end
+
+				local OriginalText = Btn.Text
+				local CacheKey = HttpService:JSONEncode(Pack.bundledItems)
+				local PackData = State.AnimationCache[CacheKey]
+
+				if not PackData then
+					Btn.Text = "جاري التحميل..."
+					
+					coroutine.wrap(function()
+						local success, err = pcall(function()
+							PackData = ResolveAnimationMappings(Pack.bundledItems)
+						end)
+
+						if not success then
+							Btn.Text = "حدث خطأ"
+							warn("Error in ResolveAnimationMappings: " .. tostring(err))
+							return
+						end
+
+						State.AnimationCache[CacheKey] = PackData
+						Btn.Text = OriginalText
+
+						if not PackData or not next(PackData) then
+							if SendNotify then SendNotify("System VR7", "هذه الحزمة فارغة أو غير صالحة", 3) end
+							return
+						end
+
+						Moving_Section.Visible = false
+						SearchBar.Visible = false
+						CreateSubSectionUI(NameKey, Pack.name, PackData, SearchBar)
+					end)()
+					
+					return
+				end
+
+				if not next(PackData) then
+					if SendNotify then SendNotify("System VR7", "هذه الحزمة فارغة أو غير صالحة", 3) end
+					return
+				end
+
+				Moving_Section.Visible = false
+				SearchBar.Visible = false
+				CreateSubSectionUI(NameKey, Pack.name, PackData, SearchBar)
+			end)
+		end
+		
+		SearchBar:GetPropertyChangedSignal("Text"):Connect(function()
+			local Query = SearchBar.Text:lower()
+			local VisibleCount = 0
+			
+			for _, Btn in ipairs(PackButtons) do
+				local BtnText = Btn.Text:lower()
+				
+				if Query == "" or string.sub(BtnText, 1, #Query) == Query then
+					Btn.Visible = true
+					VisibleCount = VisibleCount + 1
+				else
+					Btn.Visible = false
+				end
+			end
+		end)
+
+		if FirstFavPack then
+			task.spawn(function()
+				local CacheKey = HttpService:JSONEncode(FirstFavPack.bundledItems)
+				local PackData = State.AnimationCache[CacheKey]
+				if not PackData then
+					PackData = ResolveAnimationMappings(FirstFavPack.bundledItems)
+					State.AnimationCache[CacheKey] = PackData
+				end
+				if PackData and next(PackData) then
+					ApplyAnimPack(PackData)
+				end
+			end)
+		end
+	end
+
+	task.spawn(InitializeDynamicUI)
+
+	plr.CharacterAdded:Connect(function(Character)
+		task.wait(0.5)
+		ApplySavedAnimations(Character)
+	end)
+end
