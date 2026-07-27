@@ -2,101 +2,65 @@
 
 local HttpService = game:GetService("HttpService")
 
-local ExternalAPI = {
-	EmotesData = {},
-	Loaded = false
-}
-
-function ExternalAPI.LoadData()
-	local Success, Result = pcall(function()
-		return game:HttpGetAsync("https://raw.githubusercontent.com/DRYF-1/Roblox-Emote/refs/heads/main/EmoteSniper.json")
-	end)
-
-	if not Success or not Result then return end
-
-	local Ok, Data = pcall(function() return HttpService:JSONDecode(Result) end)
-	if not Ok or type(Data) ~= "table" then return end
-
-	if Data.data then Data = Data.data elseif Data.Emotes then Data = Data.Emotes end
-
-	local FinalEmotes = {}
-	local LoadedEmotes = {}
-
-	local function AddEmote(Name, Id)
-		if not (Name and Id) then return end
-		Id = tonumber(Id)
-		if not Id then return end
-		if LoadedEmotes[Id] then return end
-		LoadedEmotes[Id] = true
-
-		Name = tostring(Name)
-		table.insert(FinalEmotes, {
-			name = Name,
-			lowerName = string.lower(Name),
-			id = Id,
-			icon = "rbxthumb://type=Asset&id=" .. tostring(Id) .. "&w=150&h=150",
-			lastupdated = os.time(),
-		})
-	end
-
-	for _, Emote in pairs(Data) do
-		if type(Emote) == "table" then
-			local Name = Emote.Name or Emote.name
-			local Id = Emote.Id or Emote.id or Emote.AssetId
-			if Name and Id then AddEmote(Name, Id) end
+return {
+	LoadEmotes = function(Emotes, LoadedEmotes)
+		local Success, Result = pcall(function()
+			return game:HttpGetAsync("https://raw.githubusercontent.com/DRYF-1/Roblox-Emote/refs/heads/main/EmoteSniper.json")
+		end)
+		if not Success or not Result then return end
+		local Ok, Data = pcall(function() return HttpService:JSONDecode(Result) end)
+		if not Ok or type(Data) ~= "table" then return end
+		if Data.data then Data = Data.data elseif Data.Emotes then Data = Data.Emotes end
+		local function AddEmote(Name, Id)
+			if not (Name and Id) then return end
+			Id = tonumber(Id)
+			if not Id then return end
+			if LoadedEmotes[Id] then return end
+			LoadedEmotes[Id] = true
+			Name = tostring(Name)
+			table.insert(Emotes, {
+				name = Name,
+				lowerName = string.lower(Name),
+				id = Id,
+				icon = "rbxthumb://type=Asset&id=" .. tostring(Id) .. "&w=150&h=150",
+				lastupdated = os.time(),
+			})
 		end
-	end
-
-	AddEmote("Arm Wave", 5915773155)
-	AddEmote("Head Banging", 5915779725)
-	AddEmote("Face Calisthenics", 9830731012)
-
-	ExternalAPI.EmotesData = FinalEmotes
-	ExternalAPI.Loaded = true
-end
-
-function ExternalAPI.GetPage(Page, PerPage, Query, SortMode, FavSet)
-	if not ExternalAPI.Loaded then return {}, 1, 1 end
-
-	local Filtered = ExternalAPI.EmotesData
-
-	if Query and Query ~= "" then
-		Filtered = {}
-		for i = 1, #ExternalAPI.EmotesData do
-			if ExternalAPI.EmotesData[i].lowerName:find(Query, 1, true) then
-				table.insert(Filtered, ExternalAPI.EmotesData[i])
+		for _, Emote in pairs(Data) do
+			if type(Emote) == "table" then
+				local Name = Emote.Name or Emote.name
+				local Id = Emote.Id or Emote.id or Emote.AssetId
+				if Name and Id then AddEmote(Name, Id) end
 			end
 		end
-	end
-
-	local DisplayList = {}
-	for i = 1, #Filtered do DisplayList[i] = Filtered[i] end
-
-	table.sort(DisplayList, function(a, b)
-		local Af = FavSet[a.id] == true
-		local Bf = FavSet[b.id] == true
-		if Af ~= Bf then return Af and not Bf end
-
-		if SortMode == "recentfirst" then return (a.lastupdated or 0) > (b.lastupdated or 0)
-		elseif SortMode == "recentlast" then return (a.lastupdated or 0) < (b.lastupdated or 0)
-		elseif SortMode == "alphabeticfirst" then return a.lowerName < b.lowerName
-		elseif SortMode == "alphabeticlast" then return a.lowerName > b.lowerName
+		AddEmote("Arm Wave", 5915773155)
+		AddEmote("Head Banging", 5915779725)
+		AddEmote("Face Calisthenics", 9830731012)
+	end,
+	SortEmotes = function(DisplayEmotes, FavSet, CurrentSort)
+		table.sort(DisplayEmotes, function(a, b)
+			local Af, Bf = FavSet[a.id] == true, FavSet[b.id] == true
+			if Af ~= Bf then return Af and not Bf end
+			if CurrentSort == "recentfirst" then return (a.lastupdated or 0) > (b.lastupdated or 0)
+			elseif CurrentSort == "recentlast" then return (a.lastupdated or 0) < (b.lastupdated or 0)
+			elseif CurrentSort == "alphabeticfirst" then return a.lowerName < b.lowerName
+			elseif CurrentSort == "alphabeticlast" then return a.lowerName > b.lowerName
+			end
+			return a.lowerName < b.lowerName
+		end)
+	end,
+	FilterEmotes = function(Emotes, Q)
+		if Q == "" then return Emotes end
+		local NewList = table.create(256)
+		for i = 1, #Emotes do
+			local E = Emotes[i]
+			if E.lowerName:find(Q, 1, true) then
+				NewList[#NewList + 1] = E
+			end
 		end
-		return a.lowerName < b.lowerName
-	end)
-
-	local TotalPages = math.max(1, math.ceil(#DisplayList / PerPage))
-	if Page < 1 then Page = 1 end
-	if Page > TotalPages then Page = TotalPages end
-
-	local StartIndex = (Page - 1) * PerPage + 1
-	local EndIndex = math.min(StartIndex + PerPage - 1, #DisplayList)
-	
-	local PageResult = {}
-	for i = StartIndex, EndIndex do
-		table.insert(PageResult, DisplayList[i])
+		return NewList
 	end
-
+}
 	return PageResult, TotalPages, Page, StartIndex
 end
 
