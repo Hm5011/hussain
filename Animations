@@ -504,6 +504,23 @@ return function(Background, Moving_Section, Alert_Label, r, g, b, CreateClicker,
 			end
 		end
 		
+		local DefaultAnimPack = {
+			name = "المشية الاعتيادية",
+			bundledItems = "DEFAULT_ANIMATIONS_KEY"
+		}
+		table.insert(UniquePacksArray, 1, DefaultAnimPack) 
+		
+		State.AnimationCache[HttpService:JSONEncode("DEFAULT_ANIMATIONS_KEY")] = {
+			["idle/Animation1"] = "rbxassetid://2510196951",
+			["idle/Animation2"] = "rbxassetid://2510197257",
+			["walk/WalkAnim"]   = "rbxassetid://2510202577",
+			["run/RunAnim"]     = "rbxassetid://2510198475",
+			["jump/JumpAnim"]   = "rbxassetid://2510197830",
+			["climb/ClimbAnim"] = "rbxassetid://2510192778",
+			["fall/FallAnim"]   = "rbxassetid://2510195892",
+			["swim/SwimAnim"]   = "rbxassetid://2510203414",
+		}
+
 		local SectionLayout = Moving_Section:FindFirstChildOfClass("UIGridLayout") or Moving_Section:FindFirstChildOfClass("UIListLayout")
 		if SectionLayout then
 			SectionLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
