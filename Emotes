@@ -1,0 +1,61 @@
+--This is not a really important thing for you to scam it, ok? little skid.
+
+local HttpService = game:GetService("HttpService")
+
+local Success, Result = pcall(function()
+	return game:HttpGetAsync("https://raw.githubusercontent.com/DRYF-1/Roblox-Emote/refs/heads/main/EmoteSniper.json")
+end)
+
+if not Success or not Result then
+	return {}, {}
+end
+
+local Ok, Data = pcall(function()
+	return HttpService:JSONDecode(Result)
+end)
+
+if not Ok or type(Data) ~= "table" then
+	return {}, {}
+end
+
+if Data.data then
+	Data = Data.data
+elseif Data.Emotes then
+	Data = Data.Emotes
+end
+
+local FinalEmotes = {}
+local LoadedEmotes = {}
+
+local function AddEmote(Name, Id)
+	if not (Name and Id) then return end
+	Id = tonumber(Id)
+	if not Id then return end
+	if LoadedEmotes[Id] then return end
+	LoadedEmotes[Id] = true
+
+	Name = tostring(Name)
+	table.insert(FinalEmotes, {
+		name = Name,
+		lowerName = string.lower(Name),
+		id = Id,
+		icon = "rbxthumb://type=Asset&id=" .. tostring(Id) .. "&w=150&h=150",
+		lastupdated = os.time(),
+	})
+end
+
+for _, Emote in pairs(Data) do
+	if type(Emote) == "table" then
+		local Name = Emote.Name or Emote.name
+		local Id = Emote.Id or Emote.id or Emote.AssetId
+		if Name and Id then
+			AddEmote(Name, Id)
+		end
+	end
+end
+
+AddEmote("Arm Wave", 5915773155)
+AddEmote("Head Banging", 5915779725)
+AddEmote("Face Calisthenics", 9830731012)
+
+return FinalEmotes, LoadedEmotes
