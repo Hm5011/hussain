@@ -61,7 +61,3 @@ return {
 		return NewList
 	end
 }
-	return PageResult, TotalPages, Page, StartIndex
-end
-
-return ExternalAPI
