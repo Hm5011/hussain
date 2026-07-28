@@ -642,7 +642,7 @@ return function(Background, Moving_Section, Alert_Label, r, g, b, CreateClicker,
 			end
 		end)
 
-	--[[if FirstFavPack then
+if FirstFavPack then
 			task.spawn(function()
 				local CacheKey = HttpService:JSONEncode(FirstFavPack.bundledItems)
 				local PackData = State.AnimationCache[CacheKey]
@@ -655,7 +655,7 @@ return function(Background, Moving_Section, Alert_Label, r, g, b, CreateClicker,
 				end
 			end)
 		end
-	end]]
+	end
 
 	task.spawn(InitializeDynamicUI)
 
