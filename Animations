@@ -650,9 +650,9 @@ if FirstFavPack then
 					PackData = ResolveAnimationMappings(FirstFavPack.bundledItems)
 					State.AnimationCache[CacheKey] = PackData
 				end
-				if PackData and next(PackData) then
+				--[[if PackData and next(PackData) then
 					ApplyAnimPack(PackData)
-				end
+				end]]
 			end)
 		end
 	end
