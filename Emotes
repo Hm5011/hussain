@@ -5,7 +5,7 @@ local HttpService = game:GetService("HttpService")
 return {
 	LoadEmotes = function(Emotes, LoadedEmotes)
 		local Success, Result = pcall(function()
-			return game:HttpGetAsync("https://raw.githubusercontent.com/DRYF-1/Roblox-Emote/refs/heads/main/EmoteSniper.json")
+			return game:HttpGet("https://raw.githubusercontent.com/DRYF-1/Roblox-Emote/refs/heads/main/EmoteSniper.json")
 		end)
 		if not Success or not Result then return end
 		local Ok, Data = pcall(function() return HttpService:JSONDecode(Result) end)
