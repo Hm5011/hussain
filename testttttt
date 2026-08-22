@@ -1,0 +1,102 @@
+local Ids = {
+    
+    ["2393639720"]  = { Date = "9999/99/99 99:99:99", Protected = false, Cmds = false, Op = true },
+    ["951402104"]   = { Date = "9999/99/99 99:99:99", Protected = false, Cmds = false, Op = true },
+    ["5522233060"]  = { Date = "9999/99/99 99:99:99", Protected = false, Cmds = false, Op = true },
+    ["1688944019"]  = { Date = "9999/99/99 99:99:99", Protected = false, Cmds = false, Op = true },
+    ["2395525488"]  = { Date = "9999/99/99 99:99:99", Protected = false, Cmds = false, Op = true },
+    ["11517538561"] = { Date = "9999/99/99 99:99:99", Protected = false, Cmds = false, Op = true },
+
+    ["11516451613"] = { Date = "2026/09/23 23:14:00", Protected = false, Cmds = false, Op = true },
+    ["8806166614"]  = { Date = "2026/08/24 10:41:00", Protected = false, Cmds = false, Op = true },
+    ["2578346161"]  = { Date = "2026/09/25 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["3009574725"]  = { Date = "2026/09/11 14:40:00", Protected = false, Cmds = false, Op = true },
+    ["8293012047"]  = { Date = "2026/03/19 19:00:00", Protected = false, Cmds = false, Op = true },
+    ["7551627155"]  = { Date = "2026/06/05 22:00:00", Protected = false, Cmds = false, Op = true },
+    ["7783846020"]  = { Date = "2026/05/05 13:00:00", Protected = false, Cmds = false, Op = true },
+    ["4060587816"]  = { Date = "2026/08/15 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["1510814265"]  = { Date = "2026/09/20 12:45:00", Protected = false, Cmds = false, Op = true },
+    ["4931311809"]  = { Date = "2026/07/05 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["11390800179"] = { Date = "2026/08/07 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["10465090092"] = { Date = "2026/10/06 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["11384336784"] = { Date = "2026/08/07 23:30:00", Protected = false, Cmds = false, Op = true },
+    ["3835937006"]  = { Date = "2026/09/02 23:30:00", Protected = false, Cmds = false, Op = true },
+    ["10465092"]    = { Date = "2026/07/03 23:30:00", Protected = false, Cmds = false, Op = true },
+    ["8565161805"]  = { Date = "2027/05/14 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["4542242689"]  = { Date = "2026/07/15 00:30:00", Protected = false, Cmds = false, Op = true },
+    ["7203057919"]  = { Date = "2026/10/08 16:00:00", Protected = false, Cmds = false, Op = true },
+    ["7781627531"]  = { Date = "2026/04/03 01:00:00", Protected = false, Cmds = false, Op = true },
+    ["5857715078"]  = { Date = "2026/06/21 00:30:00", Protected = false, Cmds = false, Op = true },
+    ["8176312840"]  = { Date = "2026/09/07 18:00:00", Protected = false, Cmds = false, Op = true },
+    ["7384231351"]  = { Date = "2026/09/29 10:41:00", Protected = false, Cmds = false, Op = true },
+    ["8848069227"]  = { Date = "2026/09/01 14:00:00", Protected = false, Cmds = false, Op = true },
+    ["1160156684"]  = { Date = "2027/01/07 21:45:00", Protected = false, Cmds = false, Op = true },
+    ["4907304017"]  = { Date = "2027/01/16 00:45:00", Protected = false, Cmds = false, Op = true },
+    ["8593320509"]  = { Date = "2026/11/16 00:45:00", Protected = false, Cmds = false, Op = true },
+    ["6096107762"]  = { Date = "2026/10/10 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["1773024222"]  = { Date = "2027/12/26 21:45:00", Protected = false, Cmds = false, Op = true },
+    ["10509029700"] = { Date = "2026/04/10 00:45:00", Protected = false, Cmds = false, Op = true },
+    ["10875269066"] = { Date = "2027/03/31 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["10100185107"] = { Date = "2026/07/14 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["4251874430"]  = { Date = "2026/05/25 10:00:00", Protected = false, Cmds = false, Op = true },
+    ["1815689095"]  = { Date = "2026/04/12 21:45:00", Protected = false, Cmds = false, Op = true },
+    ["11169752757"] = { Date = "2027/09/11 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["10280078440"] = { Date = "2026/08/14 21:45:00", Protected = false, Cmds = false, Op = true },
+    ["10806932558"] = { Date = "2026/09/12 09:00:00", Protected = false, Cmds = false, Op = true },
+    ["11349699733"] = { Date = "2027/07/07 12:00:00", Protected = false, Cmds = false, Op = true },
+    ["11199483422"] = { Date = "2026/09/04 00:45:00", Protected = false, Cmds = false, Op = true },
+    ["10119547877"] = { Date = "2026/09/05 05:00:00", Protected = false, Cmds = false, Op = true },
+    ["11440644024"] = { Date = "2026/09/05 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["13688960"]    = { Date = "2026/03/21 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["11058448078"] = { Date = "2026/09/26 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["10651971459"] = { Date = "2026/04/22 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["5670035884"]  = { Date = "2026/04/12 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["8980040541"]  = { Date = "2026/07/05 00:30:00", Protected = false, Cmds = false, Op = true },
+    ["5811190105"]  = { Date = "2026/05/15 23:00:00", Protected = false, Cmds = false, Op = true },
+    ["9054825986"]  = { Date = "2026/04/01 05:00:00", Protected = false, Cmds = false, Op = true },
+    ["2829821187"]  = { Date = "2026/09/17 23:00:00", Protected = false, Cmds = false, Op = true },
+    ["7889345510"]  = { Date = "2026/09/05 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["9935737373"]  = { Date = "2026/09/31 08:00:00", Protected = false, Cmds = false, Op = true },
+    ["9823632162"]  = { Date = "2026/09/17 08:00:00", Protected = false, Cmds = false, Op = true },
+    ["11529251535"] = { Date = "2026/08/31 20:00:00", Protected = false, Cmds = false, Op = true },
+    ["4929386207"]  = { Date = "2026/08/31 22:00:00", Protected = false, Cmds = false, Op = true },
+    ["306160810"]   = { Date = "2026/08/17 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["3164446010"]  = { Date = "2026/12/17 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["10075603336"] = { Date = "2026/08/11 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["9868172452"]  = { Date = "2026/08/31 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["9154794173"]  = { Date = "2026/09/22 00:00:00", Protected = false, Cmds = false, Op = true },
+    ["5824497720"]  = { Date = "2026/08/18 08:00:00", Protected = false, Cmds = false, Op = true },
+    ["4152210188"]  = { Date = "2027/04/05 08:00:00", Protected = false, Cmds = false, Op = true },
+    ["4987653156"]  = { Date = "2026/10/10 00:00:00", Protected = false, Cmds = false, Op = true },
+}
+
+local PremiumUsers = {}
+
+local function FetchDateTime(DateTimeStr)
+    local Year, Month, Day, Hour, Min, Sec = string.match(DateTimeStr, "(%d+)%/(%d+)%/(%d+)%s+(%d+):(%d+):(%d+)")
+    return tonumber(string.format("%04d%02d%02d%02d%02d%02d", Year, Month, Day, Hour, Min, Sec))
+end
+
+local CurrentTime = os.date("*t")
+local CurrentCompare = tonumber(string.format(
+    "%04d%02d%02d%02d%02d%02d",
+    CurrentTime.year,
+    CurrentTime.month,
+    CurrentTime.day,
+    CurrentTime.hour,
+    CurrentTime.min,
+    CurrentTime.sec
+))
+
+for ID, Data in pairs(Ids) do
+    local IDDateCompare = FetchDateTime(Data.Date)
+    if IDDateCompare > CurrentCompare then
+        PremiumUsers[tostring(ID)] = {
+            Protected = Data.Protected,
+            Cmds = Data.Cmds,
+            Op = Data.Op
+        }
+    end
+end
+
+return PremiumUsers
