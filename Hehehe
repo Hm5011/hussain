@@ -7,7 +7,7 @@ local Ids = {
     ["1151753861"] = { Date = "9999/99/99 99:99:99", Protected = false, Cmds = false, Op = true, Premium = false },
 
     ["11516451613"] = { Date = "2026/09/23 23:14:00", Protected = false, Cmds = false, Op = true, Premium = false },
-    ["11541479381"] = { Date = "2026/09/23 23:14:00", Protected = true, Cmds = false, Op = false, Premium = false },
+    ["11541479381"] = { Date = "2026/09/23 23:14:00", Protected = false, Cmds = false, Op = false, Premium = true },
     ["301873991"]  = { Date = "2026/10/07 10:41:00", Protected = false, Cmds = false, Op = false, Premium = true },
     ["11579378565"]  = { Date = "2026/10/07 10:41:00", Protected = false, Cmds = false, Op = true, Premium = false },
     ["2578346161"]  = { Date = "2026/09/25 00:00:00", Protected = false, Cmds = false, Op = true, Premium = false },
