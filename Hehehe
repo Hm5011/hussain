@@ -73,6 +73,7 @@ local Ids = {
     ["11484419675"]  = { Date = "2026/09/10 15:00:00", Protected = false, Cmds = true, Op = false, Premium = false },
     ["5465610361"]  = { Date = "2026/09/10 00:00:00", Protected = false, Cmds = true, Op = false, Premium = false },
     ["5575554167"]  = { Date = "2026/09/10 00:00:00", Protected = false, Cmds = true, Op = false, Premium = false },
+    ["11578019859"]  = { Date = "2026/09/30 23:00:00", Protected = false, Cmds = true, Op = false, Premium = true },
 }
 
 local PremiumUsers = {}
