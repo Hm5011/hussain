@@ -30,7 +30,7 @@ local Ids = {
     ["11590518064"]  = { Date = "2026/09/20 01:00:00", Protected = false, Cmds = false, Op = false, Premium = true },
     ["11497477682"] = { Date = "2026/09/24 00:30:00", Protected = false, Cmds = false, Op = true, Premium = false },
     ["8176312840"]  = { Date = "2026/09/07 18:00:00", Protected = false, Cmds = false, Op = true, Premium = false },
-    ["7384231351"]  = { Date = "2027/05/01 10:41:00", Protected = false, Cmds = false, Op = true, Premium = false },
+    ["7384231351"]  = { Date = "2027/06/01 10:41:00", Protected = false, Cmds = false, Op = false, Premium = true },
     ["8848069227"]  = { Date = "2026/09/01 14:00:00", Protected = false, Cmds = false, Op = true, Premium = false },
     ["1160156684"]  = { Date = "2027/01/09 21:45:00", Protected = false, Cmds = false, Op = true, Premium = false },
     ["4907304017"]  = { Date = "2027/02/19 00:45:00", Protected = false, Cmds = false, Op = false, Premium = true },
@@ -74,6 +74,7 @@ local Ids = {
     ["5465610361"]  = { Date = "2026/09/10 00:00:00", Protected = false, Cmds = true, Op = false, Premium = false },
     ["5575554167"]  = { Date = "2026/09/10 00:00:00", Protected = false, Cmds = true, Op = false, Premium = false },
     ["11578019859"]  = { Date = "2026/09/30 23:00:00", Protected = false, Cmds = true, Op = false, Premium = true },
+    ["5699629172"]  = { Date = "2026/10/28 23:00:00", Protected = false, Cmds = false, Op = true, Premium = false },
 }
 
 local PremiumUsers = {}
