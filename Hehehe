@@ -63,7 +63,7 @@ local Ids = {
     ["9823632162"]  = { Date = "2026/09/17 08:00:00", Protected = false, Cmds = false, Op = true, Premium = false },
     ["11529251535"] = { Date = "2026/08/31 20:00:00", Protected = false, Cmds = false, Op = true, Premium = false },
     ["4929386207"]  = { Date = "2026/08/31 22:00:00", Protected = false, Cmds = false, Op = true, Premium = false },
-    ["10474064524"] = { Date = "2026/09/24 00:00:00", Protected = false, Cmds = false, Op = true, Premium = false },
+    ["10085653735"] = { Date = "2026/12/22 00:00:00", Protected = false, Cmds = false, Op = true, Premium = false },
     ["3164446010"]  = { Date = "2026/12/19 00:00:00", Protected = false, Cmds = false, Op = true, Premium = false },
     ["3707552391"] = { Date = "2026/12/19 00:00:00", Protected = false, Cmds = false, Op = false, Premium = true },
     ["2347037504"]  = { Date = "2027/01/10 00:00:00", Protected = false, Cmds = false, Op = false, Premium = true },
